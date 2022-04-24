@@ -1,0 +1,2 @@
+rootProject.name = "basework_test"
+include ':app'

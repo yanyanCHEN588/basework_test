@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">basework_test</string>
+    <!--給spinner Select 1 -->
+    <string-array name="Select1">
+        <item>None</item>
+        <item>三倍</item>
+        <item>五倍</item>
+        <item>十倍</item>
+    </string-array>
+    <!--給spinner Select 2 -->
+    <string-array name="Select2">
+        <item>None</item>
+        <item>三倍</item>
+        <item>五倍</item>
+        <item>十倍</item>
+    </string-array>
+</resources>
