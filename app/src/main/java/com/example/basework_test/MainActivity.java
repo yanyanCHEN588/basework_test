@@ -2,6 +2,7 @@ package com.example.basework_test;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     //宣告有哪些物件
     TextView tvS1,tvS2,tvD1,tvD2,tvD3,tvResult;
     Spinner spinnerS1,spinnerS2;
-    Button btStart,btPause;
+    Button btStart,btPause,btDEview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,4 +86,14 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("TEST","getSpinnerShow staus 不對 非整數");
         }
     }
+
+    //換到第二頁，要看計算過程
+    public void OnOpenDEVIEW(View view){
+        //設定"換頁"物件，且換到哪頁
+        Intent intent = new Intent(MainActivity.this,ViewActivity.class);
+        //啟動換頁
+        startActivity(intent);
+
+    }
+
 }
