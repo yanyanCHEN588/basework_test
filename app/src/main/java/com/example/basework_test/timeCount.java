@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -109,6 +110,8 @@ public class timeCount extends AppCompatActivity
                     {
                         time++;
                         timerText.setText(getTimerText());
+                        String timeString = Double.toString(time);
+                        Log.i("test","time:"+timeString);
                     }
                 });
             }
