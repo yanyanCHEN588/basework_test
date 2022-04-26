@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     //宣告有哪些物件
     TextView tvS1,tvS2,tvD1,tvD2,tvD3,tvResult;
     Spinner spinnerS1,spinnerS2;
-    Button btStart,btPause,btDEview;
+    Button btStart,btPause,btDEview,bt_time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +91,16 @@ public class MainActivity extends AppCompatActivity {
     public void OnOpenDEVIEW(View view){
         //設定"換頁"物件，且換到哪頁
         Intent intent = new Intent(MainActivity.this,ViewActivity.class);
+        //啟動換頁
+        startActivity(intent);
+
+    }
+
+    //換到time，要看時間碼表
+    public void OnOpenTime(View view){
+        Log.i("test","testbuttom");
+        //設定"換頁"物件，且換到哪頁
+        Intent intent = new Intent(MainActivity.this,timeCount.class);
         //啟動換頁
         startActivity(intent);
 
