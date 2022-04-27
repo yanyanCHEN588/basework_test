@@ -22,9 +22,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="67dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="85dp"
-        android:text="Pause"
+        android:text="RESET"
+        android:onClick="resetTapped"
         app:layout_constraintEnd_toStartOf="@+id/bt_start"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -37,6 +38,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="83dp"
         android:text="Start"
+        android:onClick="startStopTapped"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/bt_pause"
         app:layout_constraintTop_toTopOf="parent" />
