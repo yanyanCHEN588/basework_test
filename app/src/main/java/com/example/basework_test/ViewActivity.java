@@ -5,16 +5,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.content.DialogInterface;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
-
-public class ViewActivity extends AppCompatActivity {
+import android.view.View.OnClickListener; //for implements OnClickListener
+public class ViewActivity extends AppCompatActivity implements OnClickListener {
 
     //golbal variable
     TextView tvResult;
@@ -22,13 +25,15 @@ public class ViewActivity extends AppCompatActivity {
 //    Double counter = 0.0;
 
 //    TextView timerText;
-    Button stopStartButton;
+    Button stopStartButton,btGood,btKeep,btCenter;
 
     Timer timer;
     TimerTask timerTask;
     Double time = 0.0;
 
     boolean timerStarted = false;
+    SoundPool soundPool;
+    HashMap<Integer, Integer> soundMap=new HashMap<Integer, Integer>(); //不用宣布大小，利用put動態增加
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,29 @@ public class ViewActivity extends AppCompatActivity {
         tvResult = findViewById(R.id.tv_result);
 //        timerText = findViewById(R.id.timerText);
         stopStartButton =findViewById(R.id.bt_start);
+
+        btGood = findViewById(R.id.bt_good);
+        btKeep = findViewById(R.id.bt_keep);
+        btCenter = findViewById(R.id.bt_center);
+        //implements OnClickListener
+        btGood.setOnClickListener(this);
+        btKeep.setOnClickListener(this);
+        btCenter.setOnClickListener(this);
+
+        //設置音校屬性
+        AudioAttributes attr = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE) //設置音效使用場景
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build(); // 設置音樂類型
+        //soundPool Setting
+        soundPool = new SoundPool.Builder().setAudioAttributes(attr) // 將屬給予音效池
+                .setMaxStreams(20) // 設置最多可以容納個音效數量，我先估計20個拉
+                .build(); //
+
+        // load 方法加載至指定音樂文件，並返回所加載的音樂ID然後給hashmap Int
+        // 此處用hashmap來管理音樂文件 load 來自於raw文件
+        soundMap.put(1, soundPool.load(this, R.raw.good, 1));
+        soundMap.put(2, soundPool.load(this, R.raw.keep, 1));
+        soundMap.put(3, soundPool.load(this, R.raw.objincenter, 1));
+
 
         timer = new Timer();
 
@@ -145,6 +173,19 @@ public class ViewActivity extends AppCompatActivity {
     {
         stopStartButton.setText(start);
         stopStartButton.setTextColor(ContextCompat.getColor(this, color));
+    }
+
+    //implements OnClickListener
+    @Override
+    public void onClick(View view) {
+        // 判斷哪個按鈕被點擊而啟動對應聲音
+        if (view.getId() == R.id.bt_good) {
+            soundPool.play(soundMap.get(1), 1, 1, 0, 0, 1);
+        } else if (view.getId() == R.id.bt_keep) {
+            soundPool.play(soundMap.get(2), 1, 1, 0, 0, 1);
+        } else if (view.getId() == R.id.bt_center) {
+            soundPool.play(soundMap.get(3), 1, 1, 0, 0,1.5f); //調快聲音為1.5倍
+        }
     }
 
 }
