@@ -159,7 +159,8 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener {
                         time++;
 //                        timerText.setText(getTimerText());
                         String timeString = Double.toString(time);
-                        tvResult.setText(timeString);
+                        voicePlay(voiceStatus(time));
+                        tvResult.setText(timeString); //依照time撥放聲音的狀態
                         Log.i("test","time:"+timeString);
                     }
                 });
@@ -184,6 +185,34 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener {
         } else if (view.getId() == R.id.bt_keep) {
             soundPool.play(soundMap.get(2), 1, 1, 0, 0, 1);
         } else if (view.getId() == R.id.bt_center) {
+            soundPool.play(soundMap.get(3), 1, 1, 0, 0,1.5f); //調快聲音為1.5倍
+        }
+    }
+
+    private Integer voiceStatus(Double time)
+    {
+        Integer status=0;
+//        int rounded = (int) Math.round(time); //cuz 0.0 == 0
+
+        if ((time % 8)==0){
+            status=1;
+        } else if ((time % 20)==0){
+            status=2;
+        }else if ((time % 30)==0){
+            status=3;
+        }else{
+            status=0;
+        }
+
+        return status;
+    }
+
+    private void voicePlay(int status){
+        if (status == 1) {
+            soundPool.play(soundMap.get(1), 1, 1, 0, 0, 1);
+        } else if (status == 2) {
+            soundPool.play(soundMap.get(2), 1, 1, 0, 0, 1);
+        } else if (status == 3) {
             soundPool.play(soundMap.get(3), 1, 1, 0, 0,1.5f); //調快聲音為1.5倍
         }
     }
