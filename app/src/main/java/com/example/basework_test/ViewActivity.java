@@ -201,6 +201,9 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener {
                         voicePlay(voiceStatus(time));
                         tvResult.setText(timeString); //依照time撥放聲音的狀態
                         Log.i("test","time:"+timeString);
+                        if (time %15 ==0){ //每15秒震動一次
+                            vibrate();
+                        }
                     }
                 });
             }
