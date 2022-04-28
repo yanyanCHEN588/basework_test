@@ -79,6 +79,11 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
     SensorManager mSensorManger;
     Sensor mAccelerometer,mRotationVector,mMagnetic;
     TextView tv_acce,tv_magnetic,tv_rotateVector;
+    TextView tv_acceSTA,tv_magneticSTA;
+
+    int delay =10; //判斷時間條件應該放在這裡，不然進去onSensorChange每次都被刷新
+    int flat=0;
+    int riser=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +140,8 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
         tv_acce = findViewById(R.id.tv_acce);
         tv_magnetic = findViewById(R.id.tv_magnetic);
         tv_rotateVector = findViewById(R.id.tv_rotateVerctor);
+
+        tv_acceSTA = findViewById(R.id.tv_acceSTA);
 
 
     }
@@ -291,8 +298,29 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
         z=sensorEvent.values[2];
         String sensorValue = String.format("x軸: %1.2f\n\nY軸: %1.2f\n\nZ軸: %1.2f", x,y,z);
 
+
         if (sensorEvent.sensor.equals(mAccelerometer))
             tv_acce.setText(sensorValue);
+            //判斷手機是直的還平的
+            if (delay >0){ //進入偵測狀態
+                if (Math.abs(z) < 5) {
+                    riser++;
+                }else if (Math.abs(z)>5){
+                    flat++;
+                }
+                delay--; //每偵測一次就+1 代表偵測次數
+            }else { //結束偵測狀態
+                if(riser>flat){
+                    tv_acceSTA.setText("直的");
+                }else {
+                    tv_acceSTA.setText("平的");
+                }
+                riser=0;
+                flat=0;
+                delay=20; //偵測次數
+            }
+
+
         if (sensorEvent.sensor.equals(mMagnetic))
             tv_magnetic .setText(sensorValue);
         if (sensorEvent.sensor.equals(mRotationVector))
