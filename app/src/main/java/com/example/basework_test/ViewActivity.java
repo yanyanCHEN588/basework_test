@@ -203,7 +203,7 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener {
         }else{
             status=0;
         }
-
+        Log.i(getClass().getName(), String.format("voiceStatus = %d", status));
         return status;
     }
 
