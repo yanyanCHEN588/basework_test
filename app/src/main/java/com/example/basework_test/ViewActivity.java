@@ -76,9 +76,9 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
     }
 
     //sensor
-    SensorManager sm;
-    Sensor sr;
-    TextView tv_acce;
+    SensorManager mSensorManger;
+    Sensor mAccelerometer,mRotationVector,mMagnetic;
+    TextView tv_acce,tv_magnetic,tv_rotateVector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,9 +127,14 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
 //        //ms
 //        String info_t1m = Long.toString(totalMilliSeconds);
 //        Log.i("test","System:"+info_t1m);
-        sm = (SensorManager) getSystemService(SENSOR_SERVICE);//由系統取得感測器管理員
-        sr = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER); //取得加速度感應器
+        //在onCreata宣告物件 關於Sensor
+        mSensorManger = (SensorManager) getSystemService(SENSOR_SERVICE);//由系統取得感測器管理員
+        mAccelerometer = mSensorManger.getDefaultSensor(Sensor.TYPE_ACCELEROMETER); //取得加速度感應器
+        mMagnetic = mSensorManger.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD); //取得地磁感應器
+        mRotationVector = mSensorManger.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR); //取得旋轉向量感測器
         tv_acce = findViewById(R.id.tv_acce);
+        tv_magnetic = findViewById(R.id.tv_magnetic);
+        tv_rotateVector = findViewById(R.id.tv_rotateVerctor);
 
 
     }
@@ -280,7 +285,20 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) { //加速度計值改變時
-        tv_acce.setText(String.format("x軸: %1.2f\n\nY軸: %1.2f\n\nZ軸: %1.2f", sensorEvent.values[0],sensorEvent.values[1],sensorEvent.values[2]));
+        float x,y,z;
+        x=sensorEvent.values[0];
+        y=sensorEvent.values[1];
+        z=sensorEvent.values[2];
+        String sensorValue = String.format("x軸: %1.2f\n\nY軸: %1.2f\n\nZ軸: %1.2f", x,y,z);
+
+        if (sensorEvent.sensor.equals(mAccelerometer))
+            tv_acce.setText(sensorValue);
+        if (sensorEvent.sensor.equals(mMagnetic))
+            tv_magnetic .setText(sensorValue);
+        if (sensorEvent.sensor.equals(mRotationVector))
+            tv_rotateVector .setText(sensorValue);
+
+
 
     }
 
@@ -291,14 +309,20 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
     @Override
     protected void onResume() {
         super.onResume();
-        sm.registerListener(this,sr,SensorManager.SENSOR_DELAY_UI); //註冊加速度感測的監聽物件
+
+        //SENSOR_DELAY_UI 可以調整感應頻率
+        mSensorManger.registerListener(this,mAccelerometer,SensorManager.SENSOR_DELAY_UI); //註冊加速度感測的監聽物件
+        mSensorManger.registerListener(this,mMagnetic,SensorManager.SENSOR_DELAY_UI); //註冊地磁感測的監聽物件
+        mSensorManger.registerListener(this,mRotationVector,SensorManager.SENSOR_DELAY_UI); //註冊旋轉向量感測的監聽物件
+
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        sm.unregisterListener(this);//取消 加速度感測的監聽物件
+        mSensorManger.unregisterListener(this);//取消 感測器的監聽 manger代表全部
+
     }
 
 
