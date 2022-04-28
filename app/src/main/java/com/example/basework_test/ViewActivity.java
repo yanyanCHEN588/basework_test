@@ -4,10 +4,16 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.os.CombinedVibration;
+import android.os.VibrationAttributes;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.os.VibratorManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +40,36 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener {
     boolean timerStarted = false;
     SoundPool soundPool;
     HashMap<Integer, Integer> soundMap=new HashMap<Integer, Integer>(); //不用宣布大小，利用put動態增加
+
+
+    private void vibrate() {
+        //vibrate phone for api>31
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+
+            VibratorManager vibratorManager = (VibratorManager) getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+            VibrationAttributes Viattr = new VibrationAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build(); //設置震動使用場景
+
+            //effect
+            VibrationEffect Vieffect = VibrationEffect.createOneShot(500L,VibrationEffect.DEFAULT_AMPLITUDE); //震動的頻率跟模式
+            //combinedEffect
+            CombinedVibration combinedEffect = CombinedVibration.createParallel(Vieffect);
+
+            //vibrator Setting
+            vibratorManager.vibrate(combinedEffect,Viattr);
+        }
+        else {
+            //for api < 26
+            if (android.os.Build.VERSION.SDK_INT < 26){
+            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            vibrator.vibrate(10);
+            vibrator.cancel();}
+            else {
+                //for 26 <api <31
+                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +102,9 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener {
         soundMap.put(1, soundPool.load(this, R.raw.good, 1));
         soundMap.put(2, soundPool.load(this, R.raw.keep, 1));
         soundMap.put(3, soundPool.load(this, R.raw.objincenter, 1));
+
+
+
 
 
         timer = new Timer();
@@ -216,5 +255,11 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener {
             soundPool.play(soundMap.get(3), 1, 1, 0, 0,1.5f); //調快聲音為1.5倍
         }
     }
+
+
+    public void OnClickVibreate(View view){
+        vibrate();
+    }
+
 
 }
