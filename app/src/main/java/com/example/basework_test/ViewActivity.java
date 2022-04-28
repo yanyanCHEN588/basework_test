@@ -6,6 +6,10 @@ import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -23,7 +27,7 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import android.view.View.OnClickListener; //for implements OnClickListener
-public class ViewActivity extends AppCompatActivity implements OnClickListener {
+public class ViewActivity extends AppCompatActivity implements OnClickListener, SensorEventListener {
 
     //golbal variable
     TextView tvResult;
@@ -70,6 +74,11 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener {
             }
         }
     }
+
+    //sensor
+    SensorManager sm;
+    Sensor sr;
+    TextView tv_acce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +127,10 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener {
 //        //ms
 //        String info_t1m = Long.toString(totalMilliSeconds);
 //        Log.i("test","System:"+info_t1m);
+        sm = (SensorManager) getSystemService(SENSOR_SERVICE);//由系統取得感測器管理員
+        sr = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER); //取得加速度感應器
+        tv_acce = findViewById(R.id.tv_acce);
+
 
     }
 
@@ -262,6 +275,30 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener {
 
     public void OnClickVibreate(View view){
         vibrate();
+    }
+
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) { //加速度計值改變時
+        tv_acce.setText(String.format("x軸: %1.2f\n\nY軸: %1.2f\n\nZ軸: %1.2f", sensorEvent.values[0],sensorEvent.values[1],sensorEvent.values[2]));
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) { }//精確度改變時 目前不處理
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sm.registerListener(this,sr,SensorManager.SENSOR_DELAY_UI); //註冊加速度感測的監聽物件
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sm.unregisterListener(this);//取消 加速度感測的監聽物件
     }
 
 
