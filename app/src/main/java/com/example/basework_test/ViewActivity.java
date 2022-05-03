@@ -301,34 +301,35 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
         String sensorValue = String.format("x軸: %1.2f\n\nY軸: %1.2f\n\nZ軸: %1.2f", x,y,z);
 
 
-        if (sensorEvent.sensor.equals(mAccelerometer))
+        if (sensorEvent.sensor.equals(mAccelerometer)) {
             tv_acce.setText(sensorValue);
             //判斷手機是直的還平的
-            if (delay >0){ //進入偵測狀態
+            if (delay > 0) { //進入偵測狀態
                 if (Math.abs(z) < 5) {
                     riser++;
-                }else if (Math.abs(z)>5){
+                } else if (Math.abs(z) > 5) {
                     flat++;
                 }
                 delay--; //每偵測一次就+1 代表偵測次數
-            }else { //結束偵測狀態
-                if(riser>flat){
+            } else { //結束偵測狀態
+                if (riser > flat) {
                     riser_count++;
-                    if (riser_count>=2) {
+                    if (riser_count >= 2) {
                         tv_acceSTA.setText("直的");
-                        riser_count=0;
+                        riser_count = 0;
                     }
-                }else {
+                } else {
                     flat_count++;
-                    if(flat_count>=2){
+                    if (flat_count >= 2) {
                         tv_acceSTA.setText("平的");
-                        flat_count=0;
-                        }
+                        flat_count = 0;
+                    }
                 }
-                riser=0;
-                flat=0;
-                delay=20; //偵測次數
+                riser = 0;
+                flat = 0;
+                delay = 20; //偵測次數
             }
+        }
 
 
         if (sensorEvent.sensor.equals(mMagnetic))
@@ -349,7 +350,7 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
         super.onResume();
 
         //SENSOR_DELAY_UI 可以調整感應頻率
-        mSensorManger.registerListener(this,mAccelerometer,SensorManager.SENSOR_DELAY_UI); //註冊加速度感測的監聽物件
+        mSensorManger.registerListener(this,mAccelerometer,SensorManager.SENSOR_DELAY_GAME); //註冊加速度感測的監聽物件
         mSensorManger.registerListener(this,mMagnetic,SensorManager.SENSOR_DELAY_UI); //註冊地磁感測的監聽物件
         mSensorManger.registerListener(this,mRotationVector,SensorManager.SENSOR_DELAY_UI); //註冊旋轉向量感測的監聽物件
 
