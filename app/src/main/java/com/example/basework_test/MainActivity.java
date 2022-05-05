@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import com.example.basework_test.compass.CompassActivity;
 
 public class MainActivity extends AppCompatActivity {
     //宣告有哪些物件
@@ -106,4 +107,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void OnOpenCompass(View view){
+        Log.i("test","testbuttom");
+        //設定"換頁"物件，且換到哪頁
+        Intent intent = new Intent(MainActivity.this,CompassActivity.class);
+        //啟動換頁
+        startActivity(intent);
+
+    }
 }

@@ -34,7 +34,7 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
 //    Button btAdd;
 //    Double counter = 0.0;
 
-//    TextView timerText;
+    //    TextView timerText;
     Button stopStartButton,btGood,btKeep,btCenter;
 
     Timer timer;
@@ -64,9 +64,9 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
         else {
             //for api < 26
             if (android.os.Build.VERSION.SDK_INT < 26){
-            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(10);
-            vibrator.cancel();}
+                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                vibrator.vibrate(10);
+                vibrator.cancel();}
             else {
                 //for 26 <api <31
                 Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
