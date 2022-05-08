@@ -27,8 +27,14 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import android.view.View.OnClickListener; //for implements OnClickListener
-public class ViewActivity extends AppCompatActivity implements OnClickListener, SensorEventListener {
 
+import com.example.basework_test.compass.Compass; //import compass
+import com.example.basework_test.compass.SOTWFormatter;
+
+public class ViewActivity extends AppCompatActivity implements OnClickListener {
+
+    private Compass compass;
+    private SOTWFormatter sotwFormatter;
     //golbal variable
     TextView tvResult;
 //    Button btAdd;
@@ -134,18 +140,13 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
 //        //ms
 //        String info_t1m = Long.toString(totalMilliSeconds);
 //        Log.i("test","System:"+info_t1m);
-        //在onCreata宣告物件 關於Sensor
-        mSensorManger = (SensorManager) getSystemService(SENSOR_SERVICE);//由系統取得感測器管理員
-        mAccelerometer = mSensorManger.getDefaultSensor(Sensor.TYPE_ACCELEROMETER); //取得加速度感應器
-        mMagnetic = mSensorManger.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD); //取得地磁感應器
-        mRotationVector = mSensorManger.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR); //取得旋轉向量感測器
         tv_acce = findViewById(R.id.tv_acce);
         tv_magnetic = findViewById(R.id.tv_magnetic);
         tv_rotateVector = findViewById(R.id.tv_rotateVerctor);
+        tv_magneticSTA = findViewById(R.id.tv_magneticSTA);
 
-        tv_acceSTA = findViewById(R.id.tv_acceSTA);
-
-
+        sotwFormatter = new SOTWFormatter(this);
+        setupCompass();
     }
 
     public void OnClickADD(View view){
@@ -292,67 +293,19 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
     }
 
 
+
+
+
     @Override
-    public void onSensorChanged(SensorEvent sensorEvent) { //加速度計值改變時
-        float x,y,z;
-        x=sensorEvent.values[0];
-        y=sensorEvent.values[1];
-        z=sensorEvent.values[2];
-        String sensorValue = String.format("x軸: %1.2f\n\nY軸: %1.2f\n\nZ軸: %1.2f", x,y,z);
-
-
-        if (sensorEvent.sensor.equals(mAccelerometer)) {
-            tv_acce.setText(sensorValue);
-            //判斷手機是直的還平的
-            if (delay > 0) { //進入偵測狀態
-                if (Math.abs(z) < 5) {
-                    riser++;
-                } else if (Math.abs(z) > 5) {
-                    flat++;
-                }
-                delay--; //每偵測一次就+1 代表偵測次數
-            } else { //結束偵測狀態
-                if (riser > flat) {
-                    riser_count++;
-                    if (riser_count >= 2) {
-                        tv_acceSTA.setText("直的");
-                        riser_count = 0;
-                    }
-                } else {
-                    flat_count++;
-                    if (flat_count >= 2) {
-                        tv_acceSTA.setText("平的");
-                        flat_count = 0;
-                    }
-                }
-                riser = 0;
-                flat = 0;
-                delay = 20; //偵測次數
-            }
-        }
-
-
-        if (sensorEvent.sensor.equals(mMagnetic))
-            tv_magnetic .setText(sensorValue);
-        if (sensorEvent.sensor.equals(mRotationVector))
-            tv_rotateVector .setText(sensorValue);
-
-
-
+    protected void onStart() {
+        super.onStart();
+        Log.d("Compass", "start compass");
+        compass.start();
     }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) { }//精確度改變時 目前不處理
-
-
     @Override
     protected void onResume() {
         super.onResume();
-
-        //SENSOR_DELAY_UI 可以調整感應頻率
-        mSensorManger.registerListener(this,mAccelerometer,SensorManager.SENSOR_DELAY_GAME); //註冊加速度感測的監聽物件
-        mSensorManger.registerListener(this,mMagnetic,SensorManager.SENSOR_DELAY_UI); //註冊地磁感測的監聽物件
-        mSensorManger.registerListener(this,mRotationVector,SensorManager.SENSOR_DELAY_UI); //註冊旋轉向量感測的監聽物件
+        compass.start();
 
 
     }
@@ -360,9 +313,31 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
     @Override
     protected void onPause() {
         super.onPause();
-        mSensorManger.unregisterListener(this);//取消 感測器的監聽 manger代表全部
-
+        compass.stop();
+    }
+    private void setupCompass() {
+        compass = new Compass(this);
+        Compass.CompassListener cl = getCompassListener();
+        compass.setListener(cl);
     }
 
-
+    private void adjustSotwLabel(float azimuth) {
+        tv_magneticSTA.setText(sotwFormatter.format(azimuth));
+    }
+    private Compass.CompassListener getCompassListener() {
+        return new Compass.CompassListener() {
+            @Override
+            public void onNewAzimuth(final float azimuth) {
+                // UI updates only in UI thread
+                // https://stackoverflow.com/q/11140285/444966
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+//                        adjustArrow(azimuth);
+                        adjustSotwLabel(azimuth);
+                    }
+                });
+            }
+        };
+    }
 }
