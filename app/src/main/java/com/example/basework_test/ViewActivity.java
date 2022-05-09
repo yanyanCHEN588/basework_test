@@ -31,7 +31,7 @@ import android.view.View.OnClickListener; //for implements OnClickListener
 import com.example.basework_test.compass.Compass; //import compass
 import com.example.basework_test.compass.SOTWFormatter;
 
-public class ViewActivity extends AppCompatActivity implements OnClickListener {
+public class ViewActivity extends AppCompatActivity implements OnClickListener, SensorEventListener {
 
     private Compass compass;
     private SOTWFormatter sotwFormatter;
@@ -144,6 +144,12 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener {
         tv_magnetic = findViewById(R.id.tv_magnetic);
         tv_rotateVector = findViewById(R.id.tv_rotateVerctor);
         tv_magneticSTA = findViewById(R.id.tv_magneticSTA);
+        tv_acceSTA = findViewById(R.id.tv_acceSTA);
+        //在onCreata宣告物件 關於Sensor
+        mSensorManger = (SensorManager) getSystemService(SENSOR_SERVICE);//由系統取得感測器管理員
+        mAccelerometer = mSensorManger.getDefaultSensor(Sensor.TYPE_ACCELEROMETER); //取得加速度感應器
+        mMagnetic = mSensorManger.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD); //取得地磁感應器
+        mRotationVector = mSensorManger.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR); //取得旋轉向量感測器
 
         sotwFormatter = new SOTWFormatter(this);
         setupCompass();
@@ -293,6 +299,57 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener {
     }
 
 
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) { //加速度計值改變時
+        float x,y,z;
+        x=sensorEvent.values[0];
+        y=sensorEvent.values[1];
+        z=sensorEvent.values[2];
+        String sensorValue = String.format("x軸: %1.2f\n\nY軸: %1.2f\n\nZ軸: %1.2f", x,y,z);
+
+
+        if (sensorEvent.sensor.equals(mAccelerometer)) {
+            tv_acce.setText(sensorValue);
+            //判斷手機是直的還平的
+            if (delay > 0) { //進入偵測狀態
+                if (Math.abs(z) < 5) {
+                    riser++;
+                } else if (Math.abs(z) > 5) {
+                    flat++;
+                }
+                delay--; //每偵測一次就+1 代表偵測次數
+            } else { //結束偵測狀態
+                if (riser > flat) {
+                    riser_count++;
+                    if (riser_count >= 2) {
+                        tv_acceSTA.setText("直的");
+                        riser_count = 0;
+                    }
+                } else {
+                    flat_count++;
+                    if (flat_count >= 2) {
+                        tv_acceSTA.setText("平的");
+                        flat_count = 0;
+                    }
+                }
+                riser = 0;
+                flat = 0;
+                delay = 20; //偵測次數
+            }
+        }
+
+
+        if (sensorEvent.sensor.equals(mMagnetic))
+            tv_magnetic .setText(sensorValue);
+        if (sensorEvent.sensor.equals(mRotationVector))
+            tv_rotateVector .setText(sensorValue);
+
+
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) { }//精確度改變時 目前不處理
 
 
 
@@ -307,6 +364,10 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener {
         super.onResume();
         compass.start();
 
+        //SENSOR_DELAY_UI 可以調整感應頻率
+        mSensorManger.registerListener(this,mAccelerometer,SensorManager.SENSOR_DELAY_GAME); //註冊加速度感測的監聽物件
+        mSensorManger.registerListener(this,mMagnetic,SensorManager.SENSOR_DELAY_UI); //註冊地磁感測的監聽物件
+        mSensorManger.registerListener(this,mRotationVector,SensorManager.SENSOR_DELAY_UI); //註冊旋轉向量感測的監聽物件
 
     }
 
@@ -314,6 +375,7 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener {
     protected void onPause() {
         super.onPause();
         compass.stop();
+        mSensorManger.unregisterListener(this);//取消 感測器的監聽 manger代表全部
     }
     private void setupCompass() {
         compass = new Compass(this);
