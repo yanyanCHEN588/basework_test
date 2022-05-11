@@ -37,13 +37,13 @@ public class SOTWFormatter {
         if (names == null) {
             names = new String[]{
                     context.getString(com.example.basework_test.R.string.sotw_north),
-                    context.getString(com.example.basework_test.R.string.sotw_northeast),
+                    context.getString(com.example.basework_test.R.string.sotw_eastnorth),
                     context.getString(com.example.basework_test.R.string.sotw_east),
-                    context.getString(com.example.basework_test.R.string.sotw_southeast),
+                    context.getString(com.example.basework_test.R.string.sotw_eastsouth),
                     context.getString(com.example.basework_test.R.string.sotw_south),
-                    context.getString(com.example.basework_test.R.string.sotw_southwest),
+                    context.getString(com.example.basework_test.R.string.sotw_westsouth),
                     context.getString(com.example.basework_test.R.string.sotw_west),
-                    context.getString(com.example.basework_test.R.string.sotw_northwest),
+                    context.getString(com.example.basework_test.R.string.sotw_westnorth),
                     context.getString(com.example.basework_test.R.string.sotw_north)
             };
         }

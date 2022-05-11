@@ -16,10 +16,10 @@
     <string name="sotw_east">E</string>
     <string name="sotw_south">S</string>
     <string name="sotw_west">W</string>
-    <string name="sotw_northeast">NE</string>
-    <string name="sotw_northwest">NW</string>
-    <string name="sotw_southeast">SE</string>
-    <string name="sotw_southwest">SW</string>
+    <string name="sotw_eastnorth">EN</string>
+    <string name="sotw_westnorth">WN</string>
+    <string name="sotw_eastsouth">ES</string>
+    <string name="sotw_westsouth">WS</string>
     <!--給spinner Select 1 -->
     <string-array name="Select1">
         <item>None</item>
