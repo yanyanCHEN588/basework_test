@@ -41,11 +41,12 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
 //    Double counter = 0.0;
 
     //    TextView timerText;
-    Button stopStartButton,btGood,btKeep,btCenter;
+    Button stopStartButton,btGood,btKeep,btCenter,btDirection;
 
     Timer timer;
     TimerTask timerTask;
     Double time = 0.0;
+    float azi;
 
     boolean timerStarted = false;
     SoundPool soundPool;
@@ -111,12 +112,13 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
         btKeep.setOnClickListener(this);
         btCenter.setOnClickListener(this);
 
+
         //設置音校屬性
         AudioAttributes attr = new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE) //設置音效使用場景
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build(); // 設置音樂類型
         //soundPool Setting
         soundPool = new SoundPool.Builder().setAudioAttributes(attr) // 將屬給予音效池
-                .setMaxStreams(20) // 設置最多可以容納個音效數量，我先估計20個拉
+                .setMaxStreams(40) // 設置最多可以容納個音效數量，我先估計40個拉
                 .build(); //
 
         // load 方法加載至指定音樂文件，並返回所加載的音樂ID然後給hashmap Int
@@ -124,6 +126,29 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
         soundMap.put(1, soundPool.load(this, R.raw.good, 1));
         soundMap.put(2, soundPool.load(this, R.raw.keep, 1));
         soundMap.put(3, soundPool.load(this, R.raw.objincenter, 1));
+        soundMap.put(4, soundPool.load(this, R.raw.up, 1));
+        soundMap.put(5, soundPool.load(this, R.raw.down, 1));
+        soundMap.put(6, soundPool.load(this, R.raw.right, 1));
+        soundMap.put(7, soundPool.load(this, R.raw.left, 1));
+        soundMap.put(8, soundPool.load(this, R.raw.riser, 1));
+        soundMap.put(9, soundPool.load(this, R.raw.flat, 1));
+        soundMap.put(10, soundPool.load(this, R.raw.okazi, 1));
+        soundMap.put(11, soundPool.load(this, R.raw.bigtrunright, 1));
+        soundMap.put(12, soundPool.load(this, R.raw.bigturnleft, 1));
+        soundMap.put(13, soundPool.load(this, R.raw.trunright, 1));
+        soundMap.put(14, soundPool.load(this, R.raw.turnleft, 1));
+        soundMap.put(15, soundPool.load(this, R.raw.slightlyright, 1));
+        soundMap.put(16, soundPool.load(this, R.raw.slightlyleft, 1));
+        soundMap.put(17, soundPool.load(this, R.raw.north, 1));
+        soundMap.put(18, soundPool.load(this, R.raw.eastnorth, 1));
+        soundMap.put(19, soundPool.load(this, R.raw.east, 1));
+        soundMap.put(20, soundPool.load(this, R.raw.eastsouth, 1));
+        soundMap.put(21, soundPool.load(this, R.raw.south, 1));
+        soundMap.put(22, soundPool.load(this, R.raw.westsouth, 1));
+        soundMap.put(23, soundPool.load(this, R.raw.west, 1));
+        soundMap.put(24, soundPool.load(this, R.raw.westnorth, 1));
+
+
 
 
 
@@ -298,7 +323,16 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
         vibrate();
     }
 
+    public void OnClickDirection(View view){
 
+        int iAzimuth = (int)azi;
+        int index = SOTWFormatter.findClosestIndex(iAzimuth);
+        if (index == 8){index = 0;}
+        soundPool.play(soundMap.get(index+17), 1, 1, 0, 0, 1);
+    }
+    public void OnClickNull(View view){
+        vibrate();
+    }
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) { //加速度計值改變時
         float x,y,z;
@@ -397,6 +431,7 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
                     public void run() {
 //                        adjustArrow(azimuth);
                         adjustSotwLabel(azimuth);
+                        azi=azimuth;
                     }
                 });
             }

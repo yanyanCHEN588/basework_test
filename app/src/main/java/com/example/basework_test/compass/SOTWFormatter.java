@@ -54,7 +54,7 @@ public class SOTWFormatter {
      * @param target
      * @return index of the closest element
      */
-    private static int findClosestIndex(int target) {
+    public static int findClosestIndex(int target) {
         // in the original binary search https://www.geeksforgeeks.org/find-closest-number-array/
         // you will see more steps to reduce the time
         // in in this particular case the corner conditions are never true
