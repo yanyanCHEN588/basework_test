@@ -47,6 +47,7 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
     TimerTask timerTask;
     Double time = 0.0;
     float azi;
+    private float pitchGet;
 
     boolean timerStarted = false;
     SoundPool soundPool;
@@ -147,6 +148,9 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
         soundMap.put(22, soundPool.load(this, R.raw.westsouth, 1));
         soundMap.put(23, soundPool.load(this, R.raw.west, 1));
         soundMap.put(24, soundPool.load(this, R.raw.westnorth, 1));
+        soundMap.put(25, soundPool.load(this, R.raw.angel, 1));
+        soundMap.put(26, soundPool.load(this, R.raw.pitchwarn, 1));
+        soundMap.put(27, soundPool.load(this, R.raw.rollwarn, 1));
 
 
 
@@ -435,8 +439,14 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
                     @Override
                     public void run() {
 //                        adjustArrow(azimuth);
-                        adjustSotwLabel(azimuth,pitch,roll);
-                        azi=azimuth;
+                        if(pitch>-80){
+                            azi=azimuth;
+                            }else {Log.d("Compass", "手機拿太直請往下一點點");}
+                        if(Math.abs(roll)>20){
+                            Log.d("Compass", "手請不要左右歪");
+                        }
+                        adjustSotwLabel(azi,pitch,roll);
+
                     }
                 });
             }
