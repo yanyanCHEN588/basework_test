@@ -86,7 +86,7 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
     SensorManager mSensorManger;
     Sensor mAccelerometer,mRotationVector,mMagnetic;
     TextView tv_acce,tv_magnetic,tv_rotateVector;
-    TextView tv_acceSTA,tv_magneticSTA;
+    TextView tv_acceSTA,tv_magneticSTA,tv_pitchSTA,tv_rollSTA;
 
     int delay =10; //判斷時間條件應該放在這裡，不然進去onSensorChange每次都被刷新
     int flat=0;
@@ -170,6 +170,8 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
         tv_rotateVector = findViewById(R.id.tv_rotateVerctor);
         tv_magneticSTA = findViewById(R.id.tv_magneticSTA);
         tv_acceSTA = findViewById(R.id.tv_acceSTA);
+        tv_pitchSTA = findViewById(R.id.tv_pitchSTA);
+        tv_rollSTA = findViewById(R.id.tv_rollSTA);
         //在onCreata宣告物件 關於Sensor
         mSensorManger = (SensorManager) getSystemService(SENSOR_SERVICE);//由系統取得感測器管理員
         mAccelerometer = mSensorManger.getDefaultSensor(Sensor.TYPE_ACCELEROMETER); //取得加速度感應器
@@ -417,20 +419,23 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
         compass.setListener(cl);
     }
 
-    private void adjustSotwLabel(float azimuth) {
+    private void adjustSotwLabel(float azimuth,float pitch,float roll) {
         tv_magneticSTA.setText(sotwFormatter.format(azimuth));
+        tv_pitchSTA.setText(String.format("%.2f", pitch));
+        tv_rollSTA.setText(String.format("%.2f", roll));
+
     }
     private Compass.CompassListener getCompassListener() {
         return new Compass.CompassListener() {
             @Override
-            public void onNewAzimuth(final float azimuth) {
+            public void onNewAzimuth(final float azimuth,final float pitch,final float roll) {
                 // UI updates only in UI thread
                 // https://stackoverflow.com/q/11140285/444966
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
 //                        adjustArrow(azimuth);
-                        adjustSotwLabel(azimuth);
+                        adjustSotwLabel(azimuth,pitch,roll);
                         azi=azimuth;
                     }
                 });

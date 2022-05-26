@@ -7,6 +7,8 @@
     <string name="txt_magnetic">地磁</string>
     <string name="txt_gyroscope">陀螺儀</string>
     <string name="txt_rotation_vector">旋轉向量</string>
+    <string name="txt_pitch">仰角</string>
+    <string name="txt_roll">側傾角</string>
     <string name="action_settings">Settings</string>
 
     <string name="compass_dial" translatable="false">Compass Dial</string>

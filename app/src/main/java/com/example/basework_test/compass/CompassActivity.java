@@ -88,7 +88,7 @@ public class CompassActivity extends AppCompatActivity {
     private Compass.CompassListener getCompassListener() {
         return new Compass.CompassListener() {
             @Override
-            public void onNewAzimuth(final float azimuth) {
+            public void onNewAzimuth(final float azimuth,final float pitch,float roll) {
                 // UI updates only in UI thread
                 // https://stackoverflow.com/q/11140285/444966
                 runOnUiThread(new Runnable() {
