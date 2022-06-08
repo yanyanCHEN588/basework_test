@@ -190,20 +190,36 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
         setupCompass();
 
 
-        new CountDownTimer(5000, 100) {//照這樣是五秒倒數
+        new CountDownTimer(5000, 1000) {//照這樣是五秒倒數
 
             public void onTick(long millisUntilFinished) {
                 String info_t1m = Long.toString(millisUntilFinished);
-                Log.i("testCountDown",info_t1m);
+                Log.i("testCountDown","onCreate "+info_t1m);
 //                mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
             }
 
             public void onFinish() {
-                Log.i("testCountDown","Done!");
+                Log.i("testCountDown","onCreate Done!");
             }
 
         }.start();
 
+    }
+
+    private void triggeredCount(){
+        new CountDownTimer(1000, 100) {//照這樣是五秒倒數
+
+            public void onTick(long millisUntilFinished) {
+                String info_t1m = Long.toString(millisUntilFinished);
+                Log.i("testCountDown","method "+info_t1m);
+//                mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                Log.i("testCountDown","method Done!");
+            }
+
+        }.start();
     }
 
     public void OnClickADD(View view){
@@ -288,12 +304,15 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
 //                        if (time %15 ==0){ //每15秒震動一次
 //                            vibrate();
 //                        }
+                        if(time%3==0){
+                            triggeredCount();
+                        }
                     }
                 });
             }
 
         };
-        timer.scheduleAtFixedRate(timerTask, 0 ,1000);
+        timer.scheduleAtFixedRate(timerTask, 0 ,1000); //這個意思就是一秒才會進入此thread所以我有時按下ADD太快不會有反應
     }
 
 
