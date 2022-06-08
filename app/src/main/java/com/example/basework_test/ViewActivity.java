@@ -14,6 +14,7 @@ import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.CombinedVibration;
+import android.os.SystemClock;
 import android.os.VibrationAttributes;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -161,6 +162,8 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
         timer = new Timer();
 
         long time =CurrentTimeMillisClock.getInstance().now();
+        //用另外的uptimeMillis來拿也行(主要是主機開機時間)
+        //long time = SystemClock.uptimeMillis();
         String timeString = Long.toString(time);
         Log.i("test","class_timeStamp:"+timeString);
 
