@@ -14,6 +14,7 @@ import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.CombinedVibration;
+import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.os.VibrationAttributes;
 import android.os.VibrationEffect;
@@ -161,9 +162,9 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
 
         timer = new Timer();
 
-        long time =CurrentTimeMillisClock.getInstance().now();
+//        long time =CurrentTimeMillisClock.getInstance().now();
         //用另外的uptimeMillis來拿也行(主要是主機開機時間)
-        //long time = SystemClock.uptimeMillis();
+        long time = SystemClock.uptimeMillis();
         String timeString = Long.toString(time);
         Log.i("test","class_timeStamp:"+timeString);
 
@@ -187,6 +188,22 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
 
         sotwFormatter = new SOTWFormatter(this);
         setupCompass();
+
+
+        new CountDownTimer(5000, 100) {//照這樣是五秒倒數
+
+            public void onTick(long millisUntilFinished) {
+                String info_t1m = Long.toString(millisUntilFinished);
+                Log.i("testCountDown",info_t1m);
+//                mTextField.setText("seconds remaining: " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                Log.i("testCountDown","Done!");
+            }
+
+        }.start();
+
     }
 
     public void OnClickADD(View view){
@@ -211,7 +228,6 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
                 if(timerTask != null)
                 {
                     timerTask.cancel();
-                    setButtonUI("START", R.color.green);
                     time = 0.0;
                     timerStarted = false;
 //                    timerText.setText(formatTime(0,0,0));
@@ -238,14 +254,14 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
         if(timerStarted == false)
         {
             timerStarted = true;
-            setButtonUI("STOP", R.color.red);
+
 
             startTimer();
         }
         else
         {
             timerStarted = false;
-            setButtonUI("START", R.color.green);
+
 
             timerTask.cancel();
         }
@@ -269,9 +285,9 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
                         voicePlay(voiceStatus(time));
                         tvResult.setText(timeString); //依照time撥放聲音的狀態
                         Log.i("test","time:"+timeString);
-                        if (time %15 ==0){ //每15秒震動一次
-                            vibrate();
-                        }
+//                        if (time %15 ==0){ //每15秒震動一次
+//                            vibrate();
+//                        }
                     }
                 });
             }
@@ -280,11 +296,7 @@ public class ViewActivity extends AppCompatActivity implements OnClickListener, 
         timer.scheduleAtFixedRate(timerTask, 0 ,1000);
     }
 
-    private void setButtonUI(String start, int color)
-    {
-        stopStartButton.setText(start);
-        stopStartButton.setTextColor(ContextCompat.getColor(this, color));
-    }
+
 
     //implements OnClickListener
     @Override
